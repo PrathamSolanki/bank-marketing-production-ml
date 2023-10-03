@@ -1,0 +1,18 @@
+{
+  "age": 27,
+  "balance": 25000,
+  "campaign": 1,
+  "contact": "phone",
+  "day_of_week": "1",
+  "default": "no",
+  "duration": 4,
+  "education": "masters",
+  "housing": "no",
+  "job": "datascientist",
+  "loan": "no",
+  "marital": "married",
+  "month": "july",
+  "pdays": -1,
+  "previous": 0,
+  "poutcome": "null"
+}
