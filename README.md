@@ -40,4 +40,23 @@ Upon doing this successfully, Vertex AI will import the model to the registry an
 
 When the training job finishes, you can follow the steps described at official Vertex AI [documentation](https://cloud.google.com/vertex-ai/docs/general/deployment#deploy_a_model_to_an_endpoint) to deploy a model to an endpoint. Deploying the model may take some minutes.
 
+One final thing - we would also want to log the requests and the responses that we send to the endpoint. To do so, we need to enable [Request-response logging](https://cloud.google.com/vertex-ai/docs/predictions/online-prediction-logging#enabling-and-disabling). This can be done by running the following commands:
+```
+export REGION=<your project region>
+export PROJECT_ID=<your project id>
+export ENDPOINT_ID=<the endpoint id>
+
+curl -X PATCH -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "https://$REGION-aiplatform.googleapis.com/v1/projects/$PROJECT_ID/locations/$REGION/endpoints/$ENDPOINT_ID" -d '{"predict_request_response_logging_config": {"enabled": true,"sampling_rate": 1,"bigquery_destination": {"output_uri": "bq://<project id>.<bigquery dataset to store the logging>.<bigquery table name to store the logging>"}}}'
+```
+
+Important note that the table passed for store the logs should have the following schema:
+| Field name           | Type      | Mode     |
+|----------------------|-----------|----------|
+| endpoint             | STRING    | NULLABLE |
+| deployed_  model_ id | STRING    | NULLABLE |
+| logging_ time        | TIMESTAMP | NULLABLE |
+| request_ id          | NUMERIC   | NULLABLE |
+| request_ payload     | STRING    | REPEATED |
+| response_ payload    | STRING    | REPEATED |
+
 Once the model is deployed, then note the endpoint id and run the `ping_endpoint.ipynb` python notebook to send a payload to the endpoint and receive predictions.
